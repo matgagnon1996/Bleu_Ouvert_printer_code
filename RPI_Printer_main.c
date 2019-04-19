@@ -84,25 +84,30 @@ void *commandThreadFunction(void* param)
 	while(1)
 	{
 		if(receiveMessage(socketFd, header, message) < 0)
-			break;
-
-		switch(header->PayloadType)
 		{
-			case PRINT_CMD :
-				printf("Number of print : %d \n", ((printerMessage_t*)message)->numberOfPrint);
-#ifdef __PRINTER_CONNECTED
-				int i = 0;
-				int printNumber = ((printerMessage_t*)message)->numberOfPrint;
-				for(i = 0;i < printNumber; i++)
-				{
-					printBitmap(QR_CODE_WIDTH, QR_CODE_HEIGHT, &(((printerMessage_t*)message)->bitmap[0]));
-					feed(5);
-				}
-#endif
-				break;
+			perror("error while reading \n");
+		}else
+		{
 
-			default:
-				break;
+			switch(header->PayloadType)
+			{
+				case PRINT_CMD :
+					printf("Number of print : %d \n", ((printerMessage_t*)message)->numberOfPrint);
+	#ifdef __PRINTER_CONNECTED
+					int i = 0;
+					int printNumber = ((printerMessage_t*)message)->numberOfPrint;
+					for(i = 0;i < printNumber; i++)
+					{
+						printBitmap(QR_CODE_WIDTH, QR_CODE_HEIGHT, &(((printerMessage_t*)message)->bitmap[0]));
+						feed(5);
+					}
+	#endif
+					break;
+
+				default:
+					break;
+		}
+
 
 		}
 
